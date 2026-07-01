@@ -22,4 +22,4 @@ Before publishing this skill:
 6. Confirm the default report does not include other people's fetched remote branches as the user's work.
 7. Confirm evidence JSON is auditable but does not store source code or secrets.
 8. Update README examples if script flags change.
-
+9. If adding scheduled execution, confirm the default action only creates a local draft and does not auto-send or post anywhere.

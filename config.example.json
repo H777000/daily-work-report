@@ -50,6 +50,13 @@
         "prefix": "Qinyan"
       }
     ]
+  },
+  "schedule": {
+    "enabled": false,
+    "local_time": "21:50",
+    "timezone": "local",
+    "write_evidence": true,
+    "write_output": true,
+    "auto_send": false
   }
 }
-

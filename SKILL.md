@@ -207,6 +207,22 @@ If the template conflicts with evidence safety, evidence safety wins. Example: i
 9. Include a short evidence note only when useful or when the user asks for branches/MRs.
 10. Mention evidence gaps and inaccessible sources briefly.
 
+## Scheduled Daily Reports
+
+This skill can be paired with a scheduler such as Codex App automations, cron, launchd, systemd timers, GitHub Actions, or another trusted local scheduler.
+
+Recommended scheduled behavior:
+
+1. Run once near the end of the workday, for example 21:50 local time.
+2. Use the current local date and timezone.
+3. Collect local git evidence first.
+4. Collect configured external evidence second.
+5. Generate a concise report draft, not an irreversible send action.
+6. Disclose inaccessible sources and uncertain statuses.
+7. Keep generated evidence and reports in a local ignored folder such as `.daily-report/`.
+
+Scheduled jobs should not publish, send email, post to chat, or update external systems unless the user explicitly configures that action.
+
 ## Recommended Skill Package Files
 
 ```text

@@ -28,6 +28,34 @@ python3 ~/.codex/skills/daily-work-report/scripts/collect_git.py --roots . --dat
 python3 ~/.codex/skills/daily-work-report/scripts/render_report.py .daily-report/evidence/2026-07-01-git.json --date 2026-07-01
 ```
 
+## Scheduled Use
+
+You can run this skill from a local scheduler at the end of each workday.
+
+Recommended behavior:
+
+- run around 21:50 local time,
+- scan configured repositories,
+- supplement with configured external sources,
+- write evidence to `.daily-report/evidence/`,
+- generate a draft report,
+- do not auto-send or auto-post unless you explicitly configure that.
+
+Example shell flow:
+
+```bash
+mkdir -p .daily-report/evidence .daily-report/outputs
+DAY="$(date +%F)"
+python3 ~/.codex/skills/daily-work-report/scripts/collect_git.py \
+  --roots . \
+  --date "$DAY" \
+  --output ".daily-report/evidence/$DAY-git.json"
+python3 ~/.codex/skills/daily-work-report/scripts/render_report.py \
+  ".daily-report/evidence/$DAY-git.json" \
+  --date "$DAY" \
+  > ".daily-report/outputs/$DAY.md"
+```
+
 ## Configuration
 
 Copy `config.example.json` to one of:
@@ -86,4 +114,4 @@ Default behavior is local-first:
 - Jira/Linear assignee activity connector.
 - More evaluation cases.
 - Template inference tests.
-
+- Scheduler recipes for cron, launchd, systemd timers, and Codex App automations.
