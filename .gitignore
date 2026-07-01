@@ -1,0 +1,15 @@
+# Local user data
+.daily-report/
+config.json
+*.local.json
+*.local.yaml
+
+# Python runtime artifacts
+__pycache__/
+*.py[cod]
+
+# Secrets and tokens
+.env
+.env.*
+!.env.example
+

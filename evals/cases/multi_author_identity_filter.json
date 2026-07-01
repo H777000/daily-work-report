@@ -1,0 +1,9 @@
+{
+  "name": "multi_author_identity_filter",
+  "input_summary": "A repo contains same-day commits and remote branches from several people.",
+  "expected": [
+    "Use configured identity mapping to include only the user's work.",
+    "Without identity config, avoid treating unrelated fetched remote branches as the user's work.",
+    "Mention identity-mapping limitations when relevant."
+  ]
+}

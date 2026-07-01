@@ -1,0 +1,9 @@
+{
+  "name": "custom_template",
+  "input_summary": "User provides a template with date-only title, bold headings, variable section count, and numbered tomorrow plan.",
+  "expected": [
+    "Follow the template shape.",
+    "Do not force a fixed number of sections or points.",
+    "Preserve evidence-safe status wording."
+  ]
+}

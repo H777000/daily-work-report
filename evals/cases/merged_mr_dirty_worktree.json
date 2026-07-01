@@ -1,0 +1,10 @@
+{
+  "name": "merged_mr_dirty_worktree",
+  "input_summary": "One MR is merged into target branch while the current worktree has unrelated dirty files.",
+  "expected": [
+    "Report merged MR-backed work separately.",
+    "Describe dirty work as local progress only if relevant.",
+    "Do not include unrelated dirty files in delivered value."
+  ]
+}
+

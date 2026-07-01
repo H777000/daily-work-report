@@ -1,0 +1,55 @@
+{
+  "identity": {
+    "display_names": ["Your Name"],
+    "git_author_names": ["Your Name"],
+    "git_author_emails": ["you@example.com"],
+    "gitlab_usernames": ["your-gitlab-username"],
+    "github_usernames": ["your-github-username"],
+    "feishu_names": ["Your Name"],
+    "jira_assignees": ["your-jira-name"],
+    "linear_assignees": ["your-linear-name"]
+  },
+  "repositories": {
+    "roots": ["."],
+    "exclude_dirs": [
+      ".git",
+      "node_modules",
+      ".venv",
+      "venv",
+      "Library",
+      ".Trash",
+      "dist",
+      "build"
+    ],
+    "target_branches": ["origin/master", "origin/main", "master", "main"]
+  },
+  "external_sources": {
+    "feishu": [
+      {
+        "name": "daily work table",
+        "url": "https://example.feishu.cn/wiki/...",
+        "identity_field": "assignee",
+        "date_field": "date",
+        "enabled": false
+      }
+    ],
+    "gitlab": [],
+    "github": [],
+    "jira": [],
+    "linear": []
+  },
+  "report": {
+    "default_template": "leadership_zh",
+    "title": "date_only",
+    "language": "zh",
+    "tone": "leadership",
+    "include_evidence_note": "when_relevant",
+    "product_prefix_rules": [
+      {
+        "match": ["Translate", "AiPPT", "ImageEditor", "ChatPDF"],
+        "prefix": "Qinyan"
+      }
+    ]
+  }
+}
+

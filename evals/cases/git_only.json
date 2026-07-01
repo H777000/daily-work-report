@@ -1,0 +1,10 @@
+{
+  "name": "git_only_local_commits",
+  "input_summary": "One repo has same-day local commits by the configured user and no MR refs.",
+  "expected": [
+    "Report work as local committed progress.",
+    "Do not claim MR, merge, deploy, or verification.",
+    "Group commits into user-facing workstreams."
+  ]
+}
+
