@@ -1,9 +1,9 @@
 {
   "name": "multi_author_identity_filter",
-  "input_summary": "A repo contains same-day commits and remote branches from several people.",
+  "input_summary": "一个仓库中存在多个人的同日提交和远端分支。",
   "expected": [
-    "Use configured identity mapping to include only the user's work.",
-    "Without identity config, avoid treating unrelated fetched remote branches as the user's work.",
-    "Mention identity-mapping limitations when relevant."
+    "使用身份映射，只纳入用户自己的工作。",
+    "没有身份配置时，不要把无关 fetch 远端分支当成用户工作。",
+    "必要时说明身份映射限制。"
   ]
 }

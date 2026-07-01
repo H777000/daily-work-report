@@ -1,22 +1,22 @@
-# Feishu / Lark Connector Spec
+# Feishu / Lark 连接器规范
 
-Purpose: collect same-day rows, task records, wiki table entries, or handoff notes associated with the configured user identity.
+用途：采集与配置身份相关的同日/本周表格行、任务记录、wiki 表格条目或交接备注。
 
-Recommended fields:
+推荐字段：
 
 - `date`
 - `title`
-- `owner` or `assignee`
+- `owner` 或 `assignee`
 - `status`
 - `link`
-- `description` or `summary`
-- `product` or `project`
+- `description` 或 `summary`
+- `product` 或 `project`
 
-Privacy rules:
+隐私规则：
 
-- Use user-authorized access only.
-- If login or permission blocks access, return an inaccessible-source evidence item.
-- Do not guess table contents from memory.
-- Prefer row metadata and summaries over raw private conversation text.
+- 只使用用户授权访问。
+- 如果登录或权限阻塞访问，返回“不可访问来源”的证据项。
+- 不要凭记忆猜测表格内容。
+- 优先保存行元数据和摘要，避免保存原始私密对话。
 
-For personal installations, users can configure a Feishu table and an identity field so same-day rows for their own name supplement local git evidence.
+个人安装时，用户可以配置一个飞书表格和身份字段，让自己名字对应的记录补充本地 git 证据。

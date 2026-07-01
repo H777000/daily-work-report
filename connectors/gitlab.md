@@ -1,27 +1,26 @@
-# GitLab Connector Spec
+# GitLab 连接器规范
 
-Purpose: collect merge requests, branch status, approvals, pipeline state, and merge status for the configured user identity.
+用途：采集配置身份相关的 Merge Request、分支状态、审批、pipeline 状态和合并状态。
 
-Recommended API data:
+推荐 API 数据：
 
 - MR id / iid
-- title
+- 标题
 - source branch
 - target branch
-- author
-- assignees
-- created / updated / merged time
+- 作者
+- assignee
+- 创建 / 更新 / 合并时间
 - state
 - web URL
 - head SHA
-- pipeline status
+- pipeline 状态
 
-Status mapping:
+状态映射：
 
 - open MR -> `mr_open`
 - merged MR -> `merged`
-- branch pushed without MR -> `pushed_branch`
-- pipeline pass/fail -> evidence note, not deployment proof
+- 已推分支但没有 MR -> `pushed_branch`
+- pipeline 通过/失败 -> 只能作为证据说明，不等于部署证明
 
-Do not treat a passing pipeline as production deployment or user-flow verification.
-
+不要把 pipeline 通过当成生产部署或用户流程验证。

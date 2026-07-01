@@ -1,9 +1,9 @@
 {
   "name": "custom_template",
-  "input_summary": "User provides a template with date-only title, bold headings, variable section count, and numbered tomorrow plan.",
+  "input_summary": "用户提供一个模板：只写日期标题、大标题加粗、大标题数量灵活、明日计划使用编号。",
   "expected": [
-    "Follow the template shape.",
-    "Do not force a fixed number of sections or points.",
-    "Preserve evidence-safe status wording."
+    "遵循模板结构。",
+    "不要强行固定大标题或小点数量。",
+    "保留证据安全的状态措辞。"
   ]
 }

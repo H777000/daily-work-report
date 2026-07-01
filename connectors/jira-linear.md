@@ -1,21 +1,20 @@
-# Jira / Linear Connector Spec
+# Jira / Linear 连接器规范
 
-Purpose: collect issue/task movement associated with the configured user identity.
+用途：采集配置身份相关的 issue / task 流转记录。
 
-Recommended fields:
+推荐字段：
 
 - issue id
-- title
+- 标题
 - assignee
 - status
-- updated time
+- 更新时间
 - project
 - URL
-- linked branch / MR / PR when available
+- 可用时关联 branch / MR / PR
 
-Rules:
+规则：
 
-- Treat task status as planning/coordination evidence.
-- Do not treat `Done` in Jira/Linear as code merged or deployed unless linked engineering evidence confirms it.
-- Use tasks to improve workstream clustering and tomorrow follow-up.
-
+- 任务状态只能作为计划/协作证据。
+- Jira/Linear 的 `Done` 不等于代码已合并或已部署，除非有工程证据确认。
+- 任务记录主要用于改进工作主线聚合和明日/下周跟进项。

@@ -1,33 +1,32 @@
-# Security and Privacy
+# 安全与隐私
 
-`daily-work-report` is local-first by design.
+`daily-work-report` 默认本地优先。
 
-## Data Handling
+## 数据处理
 
-- Local git metadata is read from the user's machine.
-- Evidence JSON may contain branch names, commit subjects, author names, emails, and internal paths.
-- External sources should be accessed only after the user configures and authorizes them.
-- Raw private conversations, customer content, secrets, and full source files should not be stored in evidence ledgers by default.
+- 本地 git 元数据只从用户自己的机器读取。
+- 证据 JSON 可能包含分支名、commit 标题、作者名、邮箱和内部路径。
+- 外部来源必须在用户配置并授权后才访问。
+- 默认不要把原始私聊、客户内容、密钥、完整源码保存进证据账本。
 
-## Do Not Commit
+## 不要提交
 
-- `.daily-report/` evidence ledgers from private workspaces.
-- Personal config files.
-- API tokens.
-- Private Feishu/Lark/GitLab/GitHub/Jira/Linear URLs unless they are intentionally public examples.
-- Company-internal report outputs.
+- 私有工作区里的 `.daily-report/` 证据账本。
+- 个人配置文件。
+- API token。
+- 私有 Feishu/Lark/GitLab/GitHub/Jira/Linear 链接，除非它们是有意公开的示例。
+- 公司内部日报/周报输出。
 
-## Connector Safety
+## 连接器安全要求
 
-Connectors should:
+连接器应该：
 
-- return summaries and metadata where possible,
-- mark inaccessible sources explicitly,
-- avoid storing raw sensitive content,
-- support identity filtering,
-- avoid broad team surveillance use cases.
+- 优先返回摘要和元数据。
+- 明确标记不可访问来源。
+- 避免保存原始敏感内容。
+- 支持身份过滤。
+- 避免被用于大范围团队监控。
 
-## Reporting Safety
+## 汇报安全要求
 
-The skill should not overclaim. If evidence only proves a branch was pushed, do not report it as merged, deployed, or verified.
-
+Skill 不能过度承诺。如果证据只证明分支已推送，就不能写成已合并、已部署或已验证。

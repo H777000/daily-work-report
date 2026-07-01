@@ -1,10 +1,9 @@
 {
   "name": "git_only_local_commits",
-  "input_summary": "One repo has same-day local commits by the configured user and no MR refs.",
+  "input_summary": "一个仓库中配置用户有同日本地提交，但没有 MR refs。",
   "expected": [
-    "Report work as local committed progress.",
-    "Do not claim MR, merge, deploy, or verification.",
-    "Group commits into user-facing workstreams."
+    "把工作写成本地已提交进度。",
+    "不要声称已提 MR、已合并、已部署或已验证。",
+    "把提交聚合成面向用户价值的工作主线。"
   ]
 }
-

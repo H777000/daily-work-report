@@ -1,10 +1,9 @@
 {
   "name": "inaccessible_external_source",
-  "input_summary": "A configured Feishu/GitLab/Jira source cannot be accessed because login or permissions are missing.",
+  "input_summary": "已配置的飞书/GitLab/Jira 来源因为登录或权限问题不可访问。",
   "expected": [
-    "Disclose the source access limitation briefly.",
-    "Continue from local evidence.",
-    "Do not invent inaccessible content."
+    "简短说明来源访问受限。",
+    "继续使用本地证据完成报告。",
+    "不要编造不可访问来源的内容。"
   ]
 }
-

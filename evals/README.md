@@ -1,25 +1,24 @@
-# Evaluation Cases
+# 评测用例
 
-Use these cases before publishing changes to the skill.
+修改 Skill 后，发布前先跑这些用例。
 
-Minimum cases:
+最低用例：
 
-1. Git-only local commits, no MR.
-2. Pushed branch, no MR.
-3. Open MR, not merged.
-4. MR merged, dirty local work remains.
-5. External Feishu/Jira task exists, no git commit.
-6. Multi-author repo where only one identity should count.
-7. Inaccessible external source.
-8. User-provided custom template.
-9. Leadership short report.
-10. Personal-review report with evidence summary.
+1. 只有本地提交，没有 MR。
+2. 已推分支，没有 MR。
+3. MR 已创建，但未合并。
+4. MR 已合并，但本地仍有 dirty worktree。
+5. 飞书/Jira 有任务记录，但 git 没有提交。
+6. 多作者仓库，只应统计一个身份。
+7. 外部来源不可访问。
+8. 用户提供自定义模板。
+9. 领导短报。
+10. 带证据摘要的个人复盘。
 
-Expected behavior:
+预期行为：
 
-- no overclaiming
-- source gaps disclosed
-- workstreams grouped by user value
-- template shape respected
-- tomorrow plan tied to real next steps
-
+- 不过度承诺。
+- 说明证据缺口。
+- 按用户价值聚合工作主线。
+- 遵循模板结构。
+- 明日/下周计划基于真实下一步。

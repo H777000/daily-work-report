@@ -1,13 +1,13 @@
 {
   "identity": {
-    "display_names": ["Your Name"],
-    "git_author_names": ["Your Name"],
+    "display_names": ["你的名字"],
+    "git_author_names": ["你的 Git 作者名"],
     "git_author_emails": ["you@example.com"],
-    "gitlab_usernames": ["your-gitlab-username"],
-    "github_usernames": ["your-github-username"],
-    "feishu_names": ["Your Name"],
-    "jira_assignees": ["your-jira-name"],
-    "linear_assignees": ["your-linear-name"]
+    "gitlab_usernames": ["你的-gitlab-用户名"],
+    "github_usernames": ["你的-github-用户名"],
+    "feishu_names": ["你的飞书姓名"],
+    "jira_assignees": ["你的-jira-assignee"],
+    "linear_assignees": ["你的-linear-assignee"]
   },
   "repositories": {
     "roots": ["."],
@@ -26,7 +26,7 @@
   "external_sources": {
     "feishu": [
       {
-        "name": "daily work table",
+        "name": "日报/周报工作表",
         "url": "https://example.feishu.cn/wiki/...",
         "identity_field": "assignee",
         "date_field": "date",
@@ -52,8 +52,11 @@
     ]
   },
   "schedule": {
-    "enabled": false,
-    "local_time": "21:50",
+    "daily_enabled": false,
+    "daily_local_time": "21:50",
+    "weekly_enabled": false,
+    "weekly_day": "FR",
+    "weekly_local_time": "17:50",
     "timezone": "local",
     "write_evidence": true,
     "write_output": true,
