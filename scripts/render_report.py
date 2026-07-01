@@ -132,7 +132,7 @@ def render_sections(items: list[dict[str, Any]]) -> str:
         grouped[group_name(item)].append(item)
 
     if not grouped:
-        return "**一. 今日暂无可确认的本地工程变更**\n1. 本次证据中没有发现当天相关分支、提交或工作区改动。"
+        return "**一. 今日暂无可确认的本地工程变更**\n1、 本次证据中没有发现当天相关分支、提交或工作区改动。"
 
     ordered = sorted(grouped.items(), key=lambda kv: len(kv[1]), reverse=True)
     section_texts: list[str] = []
@@ -149,7 +149,7 @@ def render_sections(items: list[dict[str, Any]]) -> str:
             points.append(phrase)
             if len(points) >= 3:
                 break
-        body = "\n".join(f"{i + 1}. {point}" for i, point in enumerate(points))
+        body = "\n".join(f"{i + 1}、 {point}" for i, point in enumerate(points))
         section_texts.append(f"{heading}\n{body}")
     return "\n\n".join(section_texts)
 
@@ -161,9 +161,9 @@ def render_tomorrow(items: list[dict[str, Any]]) -> str:
         if name not in groups:
             groups.append(name)
     if not groups:
-        return "1. 继续补充当天工作证据，再生成正式日报。"
+        return "1、 继续补充当天工作证据，再生成正式日报。"
     points = [f"跟进 {name} 的 MR / 验收 / 上线状态。" for name in groups[:3]]
-    return "\n".join(f"{i + 1}. {point}" for i, point in enumerate(points))
+    return "\n".join(f"{i + 1}、 {point}" for i, point in enumerate(points))
 
 
 def evidence_summary(evidence: dict[str, Any], items: list[dict[str, Any]]) -> str:
