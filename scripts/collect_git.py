@@ -161,20 +161,42 @@ def collect_commits(repo: str, since: str, author_terms: list[str]) -> list[dict
     return commits
 
 
-def collect_refs(repo: str, day: str) -> list[dict[str, Any]]:
-    fmt = FIELD_SEP.join(["%(refname:short)", "%(objectname)", "%(committerdate:iso8601)", "%(subject)"])
+def collect_refs(repo: str, day: str, author_terms: list[str]) -> list[dict[str, Any]]:
+    fmt = FIELD_SEP.join(
+        [
+            "%(refname:short)",
+            "%(objectname)",
+            "%(committerdate:iso8601)",
+            "%(authorname)",
+            "%(authoremail)",
+            "%(subject)",
+        ]
+    )
     proc = git(repo, ["for-each-ref", "--sort=-committerdate", f"--format={fmt}", "refs/heads", "refs/remotes"])
     refs: list[dict[str, Any]] = []
     if proc.returncode != 0:
         return refs
     for line in parse_lines(proc.stdout):
         parts = line.split(FIELD_SEP)
-        if len(parts) != 4:
+        if len(parts) != 6:
             continue
-        name, sha, commit_date, subject = parts
+        name, sha, commit_date, author_name, author_email, subject = parts
         if not commit_date.startswith(day):
             continue
-        refs.append({"name": name, "sha": sha, "short_sha": sha[:9], "date": commit_date, "subject": subject})
+        author_blob = f"{author_name} {author_email}".lower()
+        author_match = not author_terms or any(term in author_blob for term in author_terms)
+        refs.append(
+            {
+                "name": name,
+                "sha": sha,
+                "short_sha": sha[:9],
+                "date": commit_date,
+                "author_name": author_name,
+                "author_email": author_email,
+                "author_match": author_match,
+                "subject": subject,
+            }
+        )
     return refs
 
 
@@ -262,12 +284,14 @@ def collect_repo(repo: str, day: str, since: str, author_terms: list[str], targe
     fetch_result = fetch_mr_refs(repo) if fetch_mrs else {"ok": None, "note": "not requested"}
     stat = status(repo)
     commits = collect_commits(repo, since, author_terms)
-    refs = collect_refs(repo, day)
+    refs = collect_refs(repo, day, author_terms)
     mr_by_sha = exact_mr_refs(repo)
     target = existing_target(repo, targets)
 
     branches: list[dict[str, Any]] = []
     for ref in refs:
+        if author_terms and not ref.get("author_match"):
+            continue
         if ref["name"].startswith("origin/merge-requests/"):
             continue
         mr_refs = mr_by_sha.get(ref["sha"], [])

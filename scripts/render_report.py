@@ -17,14 +17,14 @@ from typing import Any
 
 
 KEYWORD_GROUPS = [
-    (("universitiesrecord", "trial record", "trial-record", "admin export", "试用记录", "筛选条件", "b端"), "Qinyan B端运营导出能力推进"),
+    (("universitiesrecord", "trial record", "trial-record", "admin export", "试用记录", "筛选条件", "勾选", "全量导出", "b端"), "Qinyan B端运营导出能力推进"),
     (("aippt", "ai-ppt", "ppt"), "Qinyan AiPPT 生成与导出可靠性推进"),
     (("translate", "translation", "翻译"), "Qinyan Translate 链路与体验优化"),
     (("image-editor", "imageeditor", "image editor", "图像", "图片"), "Qinyan ImageEditor 稳定性优化"),
     (("chatpdf", "pdf"), "Qinyan ChatPDF / PDF 链路优化"),
     (("qindian", "point", "token", "积分", "沁点"), "Qindian 积分与记录体验优化"),
     (("sidebar", "shell", "navigation", "nav", "侧边栏", "导航"), "Qinyan 全局导航体验优化"),
-    (("daily-work-report", "work report", "日报", "周报"), "daily-work-report Skill 开源与自动化完善"),
+    (("daily-work-report", "daily report", "daily reports", "work report", "report numbering", "rendered chat", "final summaries", "日报", "周报"), "daily-work-report Skill 开源与自动化完善"),
 ]
 
 GROUP_ORDER = {name: idx for idx, (_, name) in enumerate(KEYWORD_GROUPS)}
@@ -70,6 +70,7 @@ def text_blob(item: dict[str, Any]) -> str:
         str(item.get("subject", "")),
         str(item.get("refs", "")),
         str(item.get("title", "")),
+        str(item.get("repo", "")),
     ]
     return " ".join(parts).lower()
 
@@ -87,7 +88,7 @@ def action_phrase(item: dict[str, Any]) -> str:
     name = str(item.get("name") or item.get("ref") or "").strip()
     blob = f"{subject} {name}".lower()
 
-    if any(keyword in blob for keyword in ("universitiesrecord", "trial record", "trial-record", "admin export", "试用记录", "筛选条件")):
+    if any(keyword in blob for keyword in ("universitiesrecord", "trial record", "trial-record", "admin export", "试用记录", "筛选条件", "勾选", "全量导出")):
         if any(keyword in blob for keyword in ("勾选", "selected", "permission", "scope", "语义")):
             return "收敛勾选导出与全量导出的交互语义，降低后台导出时的理解偏差。"
         return "推进试用记录按当前筛选条件一键导出，减少运营复查数据时的手工整理成本。"
@@ -102,7 +103,7 @@ def action_phrase(item: dict[str, Any]) -> str:
             return "补充 LAN 测试免手动登录能力，降低本地和局域网验证 SSO 链路的阻塞。"
         return "推进翻译历史同步与去重边界，提升长文档/历史记录核对的可信度。"
 
-    if any(keyword in blob for keyword in ("daily-work-report", "work report", "日报", "周报", "automation", "自动化")):
+    if any(keyword in blob for keyword in ("daily-work-report", "daily report", "daily reports", "work report", "report numbering", "rendered chat", "final summaries", "日报", "周报", "automation", "自动化")):
         if any(keyword in blob for keyword in ("schedule", "automation", "自动化", "21:50", "17:50")):
             return "配置每日 21:50 准时日报、周五 17:50 周总结，并调整为提前运行、按时交付。"
         return "完成日报 Skill 中文化、GitHub 开源发布和通用模板能力整理。"
@@ -138,28 +139,30 @@ def collect_items(evidence: dict[str, Any]) -> list[dict[str, Any]]:
                 if local_name in local_branch_names:
                     continue
             items.append({**branch, "repo": repo.get("path")})
-        current = repo.get("current", {})
-        if current.get("dirty"):
-            items.append(
-                {
-                    "name": current.get("branch", "current worktree"),
-                    "subject": "当前工作区存在未提交改动",
-                    "status": "local_dirty",
-                    "repo": repo.get("path"),
-                }
-            )
-        for worktree in repo.get("worktrees", []):
-            wt_status = worktree.get("status", {})
-            if not wt_status.get("dirty"):
+        for commit in repo.get("commits", []):
+            if commit.get("author_match") is False:
                 continue
             items.append(
                 {
-                    "name": worktree.get("branch") or wt_status.get("branch") or worktree.get("path"),
-                    "subject": "worktree 存在未提交改动",
-                    "status": "local_dirty",
-                    "repo": worktree.get("path") or repo.get("path"),
+                    "name": commit.get("refs") or commit.get("short_sha"),
+                    "subject": commit.get("subject"),
+                    "status": "local_commit",
+                    "repo": repo.get("path"),
                 }
             )
+        current = repo.get("current", {})
+        if current.get("dirty"):
+            dirty_item = {
+                "name": current.get("branch", "current worktree"),
+                "subject": "当前工作区存在未提交改动",
+                "status": "local_dirty",
+                "repo": repo.get("path"),
+            }
+            if group_name(dirty_item) != "其他工作推进":
+                items.append(dirty_item)
+        # Historical worktrees often contain old exploratory edits. Keep them
+        # in the evidence JSON, but do not treat every dirty worktree as a
+        # default report item; the current worktree is the actionable signal.
     return items
 
 
