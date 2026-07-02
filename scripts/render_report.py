@@ -17,13 +17,43 @@ from typing import Any
 
 
 KEYWORD_GROUPS = [
+    (("universitiesrecord", "trial record", "trial-record", "admin export", "试用记录", "筛选条件", "b端"), "Qinyan B端运营导出能力推进"),
     (("aippt", "ai-ppt", "ppt"), "Qinyan AiPPT 生成与导出可靠性推进"),
-    (("image-editor", "imageeditor", "image editor", "图像", "图片"), "Qinyan ImageEditor 稳定性优化"),
     (("translate", "translation", "翻译"), "Qinyan Translate 链路与体验优化"),
+    (("image-editor", "imageeditor", "image editor", "图像", "图片"), "Qinyan ImageEditor 稳定性优化"),
     (("chatpdf", "pdf"), "Qinyan ChatPDF / PDF 链路优化"),
     (("qindian", "point", "token", "积分", "沁点"), "Qindian 积分与记录体验优化"),
     (("sidebar", "shell", "navigation", "nav", "侧边栏", "导航"), "Qinyan 全局导航体验优化"),
+    (("daily-work-report", "work report", "日报", "周报"), "daily-work-report Skill 开源与自动化完善"),
 ]
+
+GROUP_ORDER = {name: idx for idx, (_, name) in enumerate(KEYWORD_GROUPS)}
+
+FALLBACK_LINES = {
+    "Qinyan B端运营导出能力推进": [
+        "推进试用记录按当前筛选条件一键导出，减少运营复查数据时的手工整理成本。",
+        "收敛勾选导出与全量导出的交互语义，降低后台导出时的理解偏差。",
+    ],
+    "Qinyan AiPPT 生成与导出可靠性推进": [
+        "推进 slide schema 生成与可编辑 PPT 导出链路，让生成结果更接近可二次编辑、可验收的交付物。",
+        "补充长任务恢复、导出保护和上线治理证据，降低 AiPPT 生成/导出链路上线风险。",
+    ],
+    "Qinyan Translate 链路与体验优化": [
+        "推进翻译历史同步与去重边界，提升长文档/历史记录核对的可信度。",
+        "补充 LAN 测试免手动登录能力，降低本地和局域网验证 SSO 链路的阻塞。",
+    ],
+    "daily-work-report Skill 开源与自动化完善": [
+        "完成日报 Skill 中文化、GitHub 开源发布和通用模板能力整理。",
+        "配置每日 21:50 准时日报、周五 17:50 周总结，并调整为提前运行、按时交付。",
+    ],
+}
+
+TOMORROW_LINES = {
+    "Qinyan B端运营导出能力推进": "继续跟进 Qinyan B端筛选导出分支的未提交修改、同步远端状态与 MR / 验收。",
+    "Qinyan AiPPT 生成与导出可靠性推进": "推进 Qinyan AiPPT schema 生成、可编辑导出和长任务可靠性相关分支确认。",
+    "Qinyan Translate 链路与体验优化": "复查 Qinyan Translate 历史同步与 LAN 测试链路的合并后表现。",
+    "daily-work-report Skill 开源与自动化完善": "观察日报自动化 21:50 准时交付效果，并继续收敛模板细节。",
+}
 
 
 def display_date(day: str) -> str:
@@ -52,31 +82,38 @@ def group_name(item: dict[str, Any]) -> str:
     return "其他工作推进"
 
 
-def status_label(item: dict[str, Any]) -> str:
-    status = item.get("status") or item.get("merge_state") or "unknown"
-    mr_refs = item.get("mr_refs") or []
-    if item.get("merge_state") == "merged" or status == "merged":
-        return "已合并"
-    if mr_refs or status == "mr_open":
-        return "已提 MR"
-    if str(item.get("name", "")).startswith("origin/") or status == "pushed_branch":
-        return "已推分支"
-    if status == "local_dirty":
-        return "本地进行中"
-    if status == "local_commit":
-        return "本地已提交"
-    return "待确认"
-
-
 def action_phrase(item: dict[str, Any]) -> str:
     subject = str(item.get("subject") or item.get("summary") or "").strip()
     name = str(item.get("name") or item.get("ref") or "").strip()
-    label = status_label(item)
+    blob = f"{subject} {name}".lower()
+
+    if any(keyword in blob for keyword in ("universitiesrecord", "trial record", "trial-record", "admin export", "试用记录", "筛选条件")):
+        if any(keyword in blob for keyword in ("勾选", "selected", "permission", "scope", "语义")):
+            return "收敛勾选导出与全量导出的交互语义，降低后台导出时的理解偏差。"
+        return "推进试用记录按当前筛选条件一键导出，减少运营复查数据时的手工整理成本。"
+
+    if any(keyword in blob for keyword in ("aippt", "ai-ppt", "ppt", "slide schema", "schema")):
+        if any(keyword in blob for keyword in ("governance", "readiness", "guard", "recovery", "恢复", "治理")):
+            return "补充长任务恢复、导出保护和上线治理证据，降低 AiPPT 生成/导出链路上线风险。"
+        return "推进 slide schema 生成与可编辑 PPT 导出链路，让生成结果更接近可二次编辑、可验收的交付物。"
+
+    if any(keyword in blob for keyword in ("translate", "translation", "翻译", "lan", "history", "历史")):
+        if any(keyword in blob for keyword in ("lan", "login", "登录", "sso")):
+            return "补充 LAN 测试免手动登录能力，降低本地和局域网验证 SSO 链路的阻塞。"
+        return "推进翻译历史同步与去重边界，提升长文档/历史记录核对的可信度。"
+
+    if any(keyword in blob for keyword in ("daily-work-report", "work report", "日报", "周报", "automation", "自动化")):
+        if any(keyword in blob for keyword in ("schedule", "automation", "自动化", "21:50", "17:50")):
+            return "配置每日 21:50 准时日报、周五 17:50 周总结，并调整为提前运行、按时交付。"
+        return "完成日报 Skill 中文化、GitHub 开源发布和通用模板能力整理。"
+
+    if item.get("status") == "local_dirty":
+        return "继续收口当前工作区改动，避免未完成内容被写成交付结果。"
     if subject:
-        return f"{label}：{subject}"
+        return subject
     if name:
-        return f"{label}：{name}"
-    return f"{label}：推进相关工作"
+        return f"推进 {name} 相关工作。"
+    return "推进相关工作。"
 
 
 def collect_items(evidence: dict[str, Any]) -> list[dict[str, Any]]:
@@ -132,13 +169,13 @@ def render_sections(items: list[dict[str, Any]]) -> str:
         grouped[group_name(item)].append(item)
 
     if not grouped:
-        return "**一. 今日暂无可确认的本地工程变更**\n1、 本次证据中没有发现当天相关分支、提交或工作区改动。"
+        return "一. 今日暂无可确认的本地工程变更\n本次证据中没有发现当天相关分支、提交或工作区改动。"
 
-    ordered = sorted(grouped.items(), key=lambda kv: len(kv[1]), reverse=True)
+    ordered = sorted(grouped.items(), key=lambda kv: (GROUP_ORDER.get(kv[0], 999), -len(kv[1])))
     section_texts: list[str] = []
     numerals = ["一", "二", "三", "四", "五", "六"]
     for idx, (name, group_items) in enumerate(ordered[:5]):
-        heading = f"**{numerals[idx]}. {name}**"
+        heading = f"{numerals[idx]}. {name}"
         seen: set[str] = set()
         points: list[str] = []
         for item in group_items:
@@ -147,9 +184,17 @@ def render_sections(items: list[dict[str, Any]]) -> str:
                 continue
             seen.add(phrase)
             points.append(phrase)
-            if len(points) >= 3:
+            if len(points) >= 2:
                 break
-        body = "\n".join(f"{i + 1}、 {point}" for i, point in enumerate(points))
+        for fallback in FALLBACK_LINES.get(name, []):
+            if len(points) >= 2:
+                break
+            if fallback not in seen:
+                points.append(fallback)
+                seen.add(fallback)
+        fallback_order = {line: idx for idx, line in enumerate(FALLBACK_LINES.get(name, []))}
+        points.sort(key=lambda line: fallback_order.get(line, 999))
+        body = "\n".join(points)
         section_texts.append(f"{heading}\n{body}")
     return "\n\n".join(section_texts)
 
@@ -160,10 +205,11 @@ def render_tomorrow(items: list[dict[str, Any]]) -> str:
         name = group_name(item)
         if name not in groups:
             groups.append(name)
+    groups.sort(key=lambda name: GROUP_ORDER.get(name, 999))
     if not groups:
-        return "1、 继续补充当天工作证据，再生成正式日报。"
-    points = [f"跟进 {name} 的 MR / 验收 / 上线状态。" for name in groups[:3]]
-    return "\n".join(f"{i + 1}、 {point}" for i, point in enumerate(points))
+        return "继续补充当天工作证据，再生成正式日报。"
+    points = [TOMORROW_LINES.get(name, f"跟进 {name} 的 MR / 验收 / 上线状态。") for name in groups[:4]]
+    return "\n".join(points)
 
 
 def evidence_summary(evidence: dict[str, Any], items: list[dict[str, Any]]) -> str:
@@ -191,7 +237,7 @@ def main() -> int:
     if args.template:
         template = Path(args.template).read_text(encoding="utf-8")
     else:
-        template = "**{display_date}**\n\n{sections}\n\n**明日工作计划：**\n{tomorrow_plan}\n"
+        template = "{display_date}\n\n{sections}\n\n明日工作计划：\n{tomorrow_plan}\n"
 
     report = template.format(
         display_date=display_date(day),
