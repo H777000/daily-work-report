@@ -21,6 +21,7 @@ KEYWORD_GROUPS = [
     (("aippt", "ai-ppt", "ppt"), "Qinyan AiPPT 生成与导出可靠性推进"),
     (("translate", "translation", "翻译"), "Qinyan Translate 链路与体验优化"),
     (("image-editor", "imageeditor", "image editor", "图像", "图片"), "Qinyan ImageEditor 稳定性优化"),
+    (("website", "website-v2", "trust proof", "preview assets", "homepage", "官网", "首页"), "Qinyan 官网学术信任证明收尾"),
     (("chatpdf", "pdf"), "Qinyan ChatPDF / PDF 链路优化"),
     (("qindian", "point", "token", "积分", "沁点"), "Qindian 积分与记录体验优化"),
     (("sidebar", "shell", "navigation", "nav", "侧边栏", "导航"), "Qinyan 全局导航体验优化"),
@@ -42,6 +43,14 @@ FALLBACK_LINES = {
         "推进翻译历史同步与去重边界，提升长文档/历史记录核对的可信度。",
         "补充 LAN 测试免手动登录能力，降低本地和局域网验证 SSO 链路的阻塞。",
     ],
+    "Qinyan ImageEditor 稳定性优化": [
+        "修复图片编辑任务重复派发问题，减少连续操作下的重复任务和状态错乱。",
+        "补充后端保护和测试覆盖，提升长时间编辑链路稳定性。",
+    ],
+    "Qinyan 官网学术信任证明收尾": [
+        "收口官网本地预览资源，减少开发环境素材引用不稳定的问题。",
+        "继续整理首页可信度表达，为上线前验收做准备。",
+    ],
     "daily-work-report Skill 开源与自动化完善": [
         "完成日报 Skill 中文化、GitHub 开源发布和通用模板能力整理。",
         "配置每日 21:50 准时日报、周五 17:50 周总结，并调整为提前运行、按时交付。",
@@ -52,6 +61,8 @@ TOMORROW_LINES = {
     "Qinyan B端运营导出能力推进": "继续跟进 Qinyan B端筛选导出分支的未提交修改、同步远端状态与 MR / 验收。",
     "Qinyan AiPPT 生成与导出可靠性推进": "推进 Qinyan AiPPT schema 生成、可编辑导出和长任务可靠性相关分支确认。",
     "Qinyan Translate 链路与体验优化": "复查 Qinyan Translate 历史同步与 LAN 测试链路的合并后表现。",
+    "Qinyan ImageEditor 稳定性优化": "验证 Qinyan ImageEditor 重复任务保护在真实编辑链路里的表现。",
+    "Qinyan 官网学术信任证明收尾": "收口 Qinyan 官网学术信任证明分支的剩余本地改动。",
     "daily-work-report Skill 开源与自动化完善": "观察日报自动化 21:50 准时交付效果，并继续收敛模板细节。",
 }
 
@@ -102,6 +113,16 @@ def action_phrase(item: dict[str, Any]) -> str:
         if any(keyword in blob for keyword in ("lan", "login", "登录", "sso")):
             return "补充 LAN 测试免手动登录能力，降低本地和局域网验证 SSO 链路的阻塞。"
         return "推进翻译历史同步与去重边界，提升长文档/历史记录核对的可信度。"
+
+    if any(keyword in blob for keyword in ("image-editor", "imageeditor", "image editor", "图像", "图片")):
+        if any(keyword in blob for keyword in ("duplicate", "dispatch", "重复")):
+            return "修复图片编辑任务重复派发问题，减少连续操作下的重复任务和状态错乱。"
+        return "补充后端保护和测试覆盖，提升长时间编辑链路稳定性。"
+
+    if any(keyword in blob for keyword in ("website", "website-v2", "trust proof", "preview assets", "homepage", "官网", "首页")):
+        if any(keyword in blob for keyword in ("preview", "assets", "local", "素材", "预览")):
+            return "收口官网本地预览资源，减少开发环境素材引用不稳定的问题。"
+        return "继续整理首页可信度表达，为上线前验收做准备。"
 
     if any(keyword in blob for keyword in ("daily-work-report", "daily report", "daily reports", "work report", "report numbering", "rendered chat", "final summaries", "日报", "周报", "automation", "自动化")):
         if any(keyword in blob for keyword in ("schedule", "automation", "自动化", "21:50", "17:50")):
@@ -172,7 +193,7 @@ def render_sections(items: list[dict[str, Any]]) -> str:
         grouped[group_name(item)].append(item)
 
     if not grouped:
-        return "一. 今日暂无可确认的本地工程变更\n本次证据中没有发现当天相关分支、提交或工作区改动。"
+        return "一. 今日暂无可确认的本地工程变更\n1、本次证据中没有发现当天相关分支、提交或工作区改动。"
 
     ordered = sorted(grouped.items(), key=lambda kv: (GROUP_ORDER.get(kv[0], 999), -len(kv[1])))
     section_texts: list[str] = []
@@ -189,15 +210,15 @@ def render_sections(items: list[dict[str, Any]]) -> str:
             points.append(phrase)
             if len(points) >= 2:
                 break
-        for fallback in FALLBACK_LINES.get(name, []):
-            if len(points) >= 2:
-                break
-            if fallback not in seen:
-                points.append(fallback)
-                seen.add(fallback)
+        if not points:
+            for fallback in FALLBACK_LINES.get(name, []):
+                if fallback not in seen:
+                    points.append(fallback)
+                    seen.add(fallback)
+                    break
         fallback_order = {line: idx for idx, line in enumerate(FALLBACK_LINES.get(name, []))}
         points.sort(key=lambda line: fallback_order.get(line, 999))
-        body = "\n".join(points)
+        body = "\n".join(f"{i + 1}、{point}" for i, point in enumerate(points))
         section_texts.append(f"{heading}\n{body}")
     return "\n\n".join(section_texts)
 
@@ -210,9 +231,9 @@ def render_tomorrow(items: list[dict[str, Any]]) -> str:
             groups.append(name)
     groups.sort(key=lambda name: GROUP_ORDER.get(name, 999))
     if not groups:
-        return "继续补充当天工作证据，再生成正式日报。"
+        return "1、继续补充当天工作证据，再生成正式日报。"
     points = [TOMORROW_LINES.get(name, f"跟进 {name} 的 MR / 验收 / 上线状态。") for name in groups[:4]]
-    return "\n".join(points)
+    return "\n".join(f"{i + 1}、{point}" for i, point in enumerate(points))
 
 
 def evidence_summary(evidence: dict[str, Any], items: list[dict[str, Any]]) -> str:
